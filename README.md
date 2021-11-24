@@ -143,7 +143,9 @@ For the metalicity, the best performing model was the one with (n_features = 60,
 9. Hunter, J. (2007). Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9(3), 90–95.
 10. Taylor, M. (2005). TOPCAT & STIL: Starlink Table/VOTable Processing Software. In Astronomical Data Analysis Software and Systems XIV (pp. 29).
 
-
+## Citation
+For information on how to cite this work, follow the link: <br>
+[![DOI](https://zenodo.org/badge/431232224.svg)](https://zenodo.org/badge/latestdoi/431232224)
 
 [1]: <https://www.splus.iag.usp.br/instrumentation/>
 [2]: <http://svo2.cab.inta-csic.es/theory/fps/index.php?id=WISE>
@@ -153,3 +155,4 @@ For the metalicity, the best performing model was the one with (n_features = 60,
 [6]: <https://splus.cloud/query>
 [7]: <http://dr6.lamost.org/search>
 [8]: <http://www.star.bris.ac.uk/~mbt/topcat/>
+
