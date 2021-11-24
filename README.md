@@ -4,24 +4,24 @@ Repository for the development of machine learning models that aim to predict, b
 
 ## Data Used
 
-The surveys used on this project were the Javalambre Photometric Local Universe Survey (**J-PLUS**: magnitudes for 12 different filters), the Wide-field Infrared Survey Explorer (**WISE**: magnitudes for 4 different filters), the GAIA Survey (magnitudes for 3 different filters) and the Large Sky Area Multi-Object Fibre Spectroscopic Telescope (**LAMOST**: values for Teff, logg and FeH). The description of the 16 filters used can be found on the table below (details taken from the [JPLUS Official Website][1] and the [SVO Filter Profile Service][2]):
+The surveys used on this project were the Javalambre Photometric Local Universe Survey (**S-PLUS**: magnitudes for 12 different filters), the Wide-field Infrared Survey Explorer (**WISE**: magnitudes for 4 different filters), the GAIA Survey (magnitudes for 3 different filters) and the Large Sky Area Multi-Object Fibre Spectroscopic Telescope (**LAMOST**: values for Teff, logg and FeH). The description of the 16 filters used can be found on the table below (details taken from the [SPLUS Official Website][1] and the [SVO Filter Profile Service][2]):
 
 | Filter | Survey | Central Wavelength (nm) |   | Filter | Survey | Central Wavelength (nm) |
 |:------:|:------:|:-----------------------:|:-:|:------:|:------:|:-----------------------:|
-|  uJAVA | J-PLUS |          348.5          |   |  J0660 | J-PLUS |          660.0          |
-|  J0378 | J-PLUS |          378.5          |   |  iSDSS | J-PLUS |          766.8          |
-|  J0395 | J-PLUS |          395.0          |   |  RP    | GAIA   |          773.0          |
-|  J0410 | J-PLUS |          410.0          |   |  J0861 | J-PLUS |          861.0          |
-|  J0430 | J-PLUS |          430.0          |   |  zSDSS | J-PLUS |          911.4          |
-|  gSDSS | J-PLUS |          480.3          |   |   W1   |  WISE  |          3352.6         |
+|  uJAVA | S-PLUS |          348.5          |   |  J0660 | S-PLUS |          660.0          |
+|  J0378 | S-PLUS |          378.5          |   |  iSDSS | S-PLUS |          766.8          |
+|  J0395 | S-PLUS |          395.0          |   |  RP    | GAIA   |          773.0          |
+|  J0410 | S-PLUS |          410.0          |   |  J0861 | S-PLUS |          861.0          |
+|  J0430 | S-PLUS |          430.0          |   |  zSDSS | S-PLUS |          911.4          |
+|  gSDSS | S-PLUS |          480.3          |   |   W1   |  WISE  |          3352.6         |
 |  BP    | GAIA   |          505.0          |   |   W2   |  WISE  |          4602.8         |
-|  J0515 | J-PLUS |          515.0          |   |   W3   |  WISE  |         11560.8         |
+|  J0515 | S-PLUS |          515.0          |   |   W3   |  WISE  |         11560.8         |
 |  G     | GAIA   |          623.0          |   |   W4   |  WISE  |         22088.3         |
-|  rSDSS | J-PLUS |          625.4          |   |        |        |                         |
+|  rSDSS | S-PLUS |          625.4          |   |        |        |                         |
 
-As well as the 19 magnitudes, we also calculated all the 171 possible combinations (also called colors) between them, and the 190 resulting features were used as input for the models. The initial J-PLUS + WISE + GAIA sample was obtained using the J-PLUS DR2 [Data Access Website][6] and had 1.340.602 objects with measured magnitude values for all 19 filters (and a mag_err > 0.1 for the J-PLUS magnitudes). After crossing this sample with the full LAMOST sample (downloaded directly from their own [search tool][7]), we obtained 185.248 objects in common between the two.
+As well as the 19 magnitudes, we also calculated all the 171 possible combinations (also called colors) between them, and the 190 resulting features were used as input for the models. The initial S-PLUS + WISE + GAIA sample was obtained using the S-PLUS DR2 [Data Access Website][6] and [TOPCAT][8]. This initial sample had 1,013,674 objects with measured magnitude values for all 19 filters (and a mag_err > 0.2 for the S-PLUS magnitudes). After crossing this sample with the full LAMOST sample (downloaded directly from their own [search tool][7]), we obtained 36,985 objects in common between the two.
 
-To guarantee that we were using only the stars with good values of each parameter we filtered out the objects with teff_err > 300, logg_err > 0.2 or feh_err > 0.4, and this final development sample (used to tune, train and test the models) had around 101.516 stars.
+To guarantee that we were using only the stars with good values of each parameter we filtered out the objects with teff_err > 300, logg_err > 0.4 or feh_err > 0.4, and this final development sample (used to tune, train and test the models) had around 30,813 stars.
 
 ## Hyperparameter Optimization
 We chose to base our estimators on the **[Random Forest][3]** machine learning model, and since many of the 190 input features had little to no valuable information to add to the model, a Recursive Feature Elimination (**[RFE][4]**) was performed on our input data to choose only the best features before passing them to the Random Forest.
@@ -39,15 +39,15 @@ In total, each one of the three STEPEs was tested with 64 different combinations
 <img align="left" src="hyperparameter_tuning/teff/rf_teff_R2_heatmap.jpg" width=500>
 
 **5 Best models**
-|     Combination    |        R2          |
-|:------------------:|:------------------:|
-|  (60, 0.5, 100, 1) | 0.9751 &pm; 0.0005 |
-|  (45, 0.5, 100, 1) | 0.9751 &pm; 0.0006 |
-| (60, 0.25, 100, 1) | 0.9751 &pm; 0.0003 |
-| (60, 0.75, 100, 1) | 0.9750 &pm; 0.0008 |
-| (45, 0.75, 100, 1) | 0.9750 &pm; 0.0006 |
+|     Combination     |        R2          |
+|:-------------------:|:------------------:|
+|  (60, 0.25, 100, 1) | 0.9729 &pm; 0.0012 |
+| (190, 0.25, 100, 1) | 0.9729 &pm; 0.0015 |
+|  (45, 0.5, 100, 1)  | 0.9729 &pm; 0.0018 |
+|  (60, 0.5, 100, 1)  | 0.9728 &pm; 0.0010 |
+|  (45, 0.25, 100, 1) | 0.9728 &pm; 0.0012 |
 <br>
-As can be seen on the heatmap, all of the combinations tested resulted in R2 scores above 0.971, and the difference between the best and worst models is very small (around 0.004). Also, as expected, there is almost no difference in the score after n_features = 45 (with the exception of a much greater training time).
+As can be seen on the heatmap, all of the combinations tested resulted in R2 scores above 0.971, and the difference between the best and worst models is very small (around 0.003). Also, as expected, there is almost no difference in the score after n_features = 45 (with the exception of a much greater training time).
 <br>
 It is interesting to point out that every model with n_trees = 100 performed slightly better than its counterpart with n_trees = 50. Also, all the models with msl = 10 performed worse than their counterparts with msl = 1.
 <br><br><br>
@@ -58,13 +58,13 @@ It is interesting to point out that every model with n_trees = 100 performed sli
 **5 Best models**
 |     Combination    |        R2          |
 |:------------------:|:------------------:|
-| (45, 0.25, 100, 1) | 0.8848 &pm; 0.0025 |
-| (60, 0.25, 100, 1) | 0.8841 &pm; 0.0028 |
-|  (45, 0.5, 100, 1) | 0.8838 &pm; 0.0014 |
-|  (60, 0.5, 100, 1) | 0.8834 &pm; 0.0024 |
-|  (45, 0.25, 50, 1) | 0.8830 &pm; 0.0039 |
+| (45, 0.25, 100, 1) | 0.8096 &pm; 0.0120 |
+|  (45, 0.5, 100, 1) | 0.8095 &pm; 0.0047 |
+|  (15, 0.5, 100, 1) | 0.8087 &pm; 0.0123 |
+|  (60, 0.5, 100, 1) | 0.8080 &pm; 0.0107 |
+| (60, 0.25, 100, 1) | 0.8073 &pm; 0.0083 |
 <br>
-Although the logg STEPEs performed worse than the T<sub>eff</sub> estimators, taking into consideration that a R2 score of 0.8848 amounts to a correlation of 94.1% between the predicted and real values, their results are still very good. 
+Although the logg STEPEs performed considerably worse than the T<sub>eff</sub> estimators, taking into consideration that a R2 score of 0.8096 amounts to a correlation of 89.98% between the predicted and real values, their results are still relatively good. 
 <br>
 Again, increasing the n_features hyperparameter above 45 brings no real improvement to the models, and in general the models with n_trees = 100 performed better than their counterparts with n_trees = 50. Also, all the models with msl = 10 performed worse than their counterparts with msl = 1.
 <br><br><br>
@@ -73,15 +73,15 @@ Again, increasing the n_features hyperparameter above 45 brings no real improvem
 <img align="left" src="hyperparameter_tuning/feh/rf_FeH_R2_heatmap.jpg" height=500>
 
 **5 Best models**
-|     Combination     |        R2          |
-|:-------------------:|:------------------:|
-|  (60, 0.25, 100, 1) | 0.8689 &pm; 0.0015 |
-|  (45, 0.25, 100, 1) | 0.8682 &pm; 0.0021 |
-| (190, 0.25, 100, 1) | 0.8679 &pm; 0.0036 |
-|  (45, 0.5, 100, 1)  | 0.8674 &pm; 0.0037 |
-|  (60, 0.25, 50, 1)  | 0.8673 &pm; 0.0040 |
+|     Combination    |        R2          |
+|:------------------:|:------------------:|
+| (60, 0.25, 100, 1) | 0.8331 &pm; 0.0034 |
+| (45, 0.25, 100, 1) | 0.8330 &pm; 0.0037 |
+|  (45, 0.5, 100, 1) | 0.8318 &pm; 0.0041 |
+|  (60, 0.5, 100, 1) | 0.8313 &pm; 0.0057 |
+|  (45, 0.25, 50, 1) | 0.8304 &pm; 0.0065 |
 <br>
-The [Fe/H] STEPEs were the worst ones, but since a R2 score of 0.8698 amounts to a correlation 93.26% between the predicted and real values, we can also consider it a good estimator. 
+The [Fe/H] STEPEs were slightly better than the logg ones, and since a R2 score of 0.8331 amounts to a correlation 91.27% between the predicted and real values, we can also consider them good estimators. 
 <br>
 For a third time, an increase from n_trees = 50 to n_trees = 100 resulted in a small increase in performance. Also, again, all the models with msl = 10 performed worse than their counterparts with msl = 1.
 <br><br><br>
@@ -97,23 +97,23 @@ For the effective temperature, if we consider both the average value and the sta
 
 |   Metric  |   Value  |
 |:---------:|:--------:|
-|    MAE    |  65.374  |
-|    RMSE   |  86.807  |
-| Max Error | 1063.697 |
-|     R2    |   0.976  |
+|    MAE    |  63.992  |
+|    RMSE   |  92.910  |
+| Max Error | 1581.399 |
+|     R2    |   0.973  |
 
 <br/><br/><br/><br/><br/>
 ### logg Final STEPE
-For the surface gravity, the best performing model was the one with (n_features = 45, max_features = 0.25, n_trees = 100, msl = 1). Using this combination of hyperparameters, the results were:
+For the surface gravity, the best performing model was the one with (n_features = 45, max_features = 0.5, n_trees = 100, msl = 1). Using this combination of hyperparameters, the results were:
 
 <img align="left" src="final_models/rf_logg_estimator/test_results.jpg" height=300>
 
 |   Metric  | Value |
 |:---------:|:-----:|
-|    MAE    | 0.114 |
-|    RMSE   | 0.170 |
-| Max Error | 2.198 |
-|     R2    | 0.889 |
+|    MAE    | 0.131 |
+|    RMSE   | 0.208 |
+| Max Error | 2.550 |
+|     R2    | 0.819 |
 
 <br/><br/><br/><br/><br/>
 ### [Fe/H] Final STEPE
@@ -123,16 +123,16 @@ For the metalicity, the best performing model was the one with (n_features = 60,
 
 |   Metric  | Value |
 |:---------:|:-----:|
-|    MAE    | 0.091 |
-|    RMSE   | 0.124 |
-| Max Error | 1.130 |
-|     R2    | 0.868 |
+|    MAE    | 0.115 |
+|    RMSE   | 0.158 |
+| Max Error | 1.334 |
+|     R2    | 0.834 |
 
 <br/><br/><br/><br/><br/>
 
 ## References
 
-1. Cenarro, A., Moles, M., Cristóbal-Hornillos, D., Marín-Franch, A., Ederoclite, A., Varela, J., López-Sanjuan, C., Hernández-Monteagudo, C., Angulo, R., Vázquez Ramió, H., & et al. (2019). J-PLUS: The Javalambre Photometric Local Universe Survey. Astronomy & Astrophysics, 622, A176.<br>
+1. Mendes de Oliveira, C., Ribeiro, T., Schoenell, W., Kanaan, A., Overzier, R. A., Molino, A., Sampedro, L., Coelho, P., Barbosa, C. E., Cortesi, A., Costa-Duarte, M. V., Herpich, F. R., Hernandez-Jimenez, J. A., Placco, V. M., Xavier, H. S., Abramo, L. R., Saito, R. K., Chies-Santos, A. L., Ederoclite, A., … Zaritsky, D. (2019). The Southern Photometric Local Universe Survey (S-PLUS): improved SEDs, morphologies, and redshifts with 12 optical filters. Monthly Notices of the Royal Astronomical Society, 489(1), 241–267. <br>
 2. Breiman, L. Random Forests. Machine Learning 45, 5–32 (2001).
 3. Refaeilzadeh P., Tang L., Liu H. (2009) Cross-Validation. In: LIU L., ÖZSU M.T. (eds) Encyclopedia of Database Systems. Springer, Boston, MA.
 4. Fabian Pedregosa, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel, Bertrand Thirion, Olivier Grisel, Mathieu Blondel, Peter Prettenhofer, Ron Weiss, Vincent Dubourg, Jake Vanderplas, Alexandre Passos, David Cournapeau, Matthieu Brucher, Matthieu Perrot, Édouard Duchesnay; 12(85):2825−2830, 2011.
@@ -141,16 +141,15 @@ For the metalicity, the best performing model was the one with (n_features = 60,
 7. The pandas development team. (2020). pandas-dev/pandas: Pandas 1.0.3 (v1.0.3). Zenodo. 
 8. Michael L. Waskom (2021). seaborn: statistical data visualization. Journal of Open Source Software, 6(60), 3021.
 9. Hunter, J. (2007). Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9(3), 90–95.
-
-## Citation
-For information on how to cite this work, follow the link: <br>
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5716519.svg)](https://doi.org/10.5281/zenodo.5716519)
+10. Taylor, M. (2005). TOPCAT & STIL: Starlink Table/VOTable Processing Software. In Astronomical Data Analysis Software and Systems XIV (pp. 29).
 
 
-[1]: <http://www.j-plus.es/survey/instrumentation>
+
+[1]: <https://www.splus.iag.usp.br/instrumentation/>
 [2]: <http://svo2.cab.inta-csic.es/theory/fps/index.php?id=WISE>
 [3]: <https://link.springer.com/content/pdf/10.1023/A:1010933404324.pdf>
 [4]: <https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html>
 [5]: <https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-39940-9_565>
-[6]: <http://archive.cefca.es/catalogues/jplus-dr2>
+[6]: <https://splus.cloud/query>
 [7]: <http://dr6.lamost.org/search>
+[8]: <http://www.star.bris.ac.uk/~mbt/topcat/>
